@@ -66,7 +66,7 @@ use alloc::boxed::Box;
 
 /// A trait to implement dynamic typing.
 ///
-/// This type is the same as the standard library [`Any`] trait,
+/// This trait is the same as the standard library [`Any`] trait,
 /// except that it can be debug printed.
 ///
 /// See also the [crate level documentation](crate) for more details.
@@ -110,8 +110,7 @@ impl dyn AnyDebug {
     ///
     /// ## Errors
     ///
-    /// If the message contained within `self` is not of type `T`, returns `self`
-    /// (so that e.g. a different type can be downcasted against).
+    /// If the message contained within `self` is not of type `T`, returns `self`.
     #[cfg(feature = "alloc")]
     pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
         if self.is::<T>() {
@@ -122,6 +121,8 @@ impl dyn AnyDebug {
     }
 
     /// Returns `true` if the inner type is the same as `T`.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
     pub fn is<T: AnyDebug>(&self) -> bool {
         let this: &dyn Any = self;
         this.is::<T>()
@@ -151,8 +152,7 @@ impl dyn AnyDebug + Send {
     ///
     /// ## Errors
     ///
-    /// If the message contained within `self` is not of type `T`, returns `self`
-    /// (so that e.g. a different type can be downcasted against).
+    /// If the message contained within `self` is not of type `T`, returns `self`.
     #[cfg(feature = "alloc")]
     pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
         if self.is::<T>() {
@@ -163,6 +163,8 @@ impl dyn AnyDebug + Send {
     }
 
     /// Returns `true` if the inner type is the same as `T`.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
     pub fn is<T: AnyDebug>(&self) -> bool {
         let this: &dyn Any = self;
         this.is::<T>()
@@ -192,8 +194,7 @@ impl dyn AnyDebug + Send + Sync {
     ///
     /// ## Errors
     ///
-    /// If the message contained within `self` is not of type `T`, returns `self`
-    /// (so that e.g. a different type can be downcasted against).
+    /// If the message contained within `self` is not of type `T`, returns `self`.
     #[cfg(feature = "alloc")]
     pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
         if self.is::<T>() {
@@ -204,6 +205,8 @@ impl dyn AnyDebug + Send + Sync {
     }
 
     /// Returns `true` if the inner type is the same as `T`.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
     pub fn is<T: AnyDebug>(&self) -> bool {
         let this: &dyn Any = self;
         this.is::<T>()
@@ -212,8 +215,135 @@ impl dyn AnyDebug + Send + Sync {
 
 #[cfg(test)]
 mod tests {
-    // CI will fail unless cargo nextest can execute at least one test per workspace.
-    // Delete this dummy test once we have an actual real test.
+    #[cfg(not(feature = "alloc"))]
+    compile_error!("Anymore's tests need the `alloc` crate feature to be enabled.");
+
+    use crate::AnyDebug;
+    use alloc::{boxed::Box, format};
+
+    #[derive(Debug)]
+    struct SomeMessage(u32);
+
     #[test]
-    fn dummy_test_until_we_have_a_real_test() {}
+    fn any_debug_correct_typename() {
+        let val = SomeMessage(4);
+        let val: &dyn AnyDebug = &val;
+        assert!(val.type_name().contains("SomeMessage"));
+    }
+
+    #[test]
+    fn any_debug_shared_correct_debug() {
+        let val = SomeMessage(5);
+        let val: &dyn AnyDebug = &val;
+        let format_result = format!("{val:?}");
+        assert!(format_result.contains("SomeMessage"));
+        assert!(format_result.contains("5"));
+    }
+    #[test]
+    fn any_debug_excl_correct_debug() {
+        let mut val = SomeMessage(6);
+        let val: &mut dyn AnyDebug = &mut val;
+        let format_result = format!("{val:?}");
+        assert!(format_result.contains("SomeMessage"));
+        assert!(format_result.contains("6"));
+    }
+    #[test]
+    fn any_debug_box_correct_debug() {
+        let val = SomeMessage(7);
+        let val: Box<dyn AnyDebug> = Box::new(val);
+        let format_result = format!("{val:?}");
+        assert!(format_result.contains("SomeMessage"));
+        assert!(format_result.contains("7"));
+    }
+
+    #[test]
+    fn any_debug_normal_is() {
+        let val = SomeMessage(10);
+        let val: &dyn AnyDebug = &val;
+        assert!(val.is::<SomeMessage>());
+        assert!(!val.is::<u32>());
+    }
+    #[test]
+    fn any_debug_normal_downcast_ref() {
+        let val = SomeMessage(11);
+        let val: &dyn AnyDebug = &val;
+        assert_eq!(val.downcast_ref::<SomeMessage>().unwrap().0, 11);
+    }
+    #[test]
+    fn any_debug_normal_downcast_mut() {
+        let mut val = SomeMessage(12);
+        let val_mut: &mut dyn AnyDebug = &mut val;
+        val_mut.downcast_mut::<SomeMessage>().unwrap().0 = 13;
+        assert!(val_mut.downcast_mut::<u32>().is_none());
+        assert_eq!(val.0, 13);
+    }
+
+    #[test]
+    fn any_debug_normal_downcast() {
+        let val = SomeMessage(14);
+        let val: Box<dyn AnyDebug> = Box::new(val);
+        let val = val.downcast::<u32>().unwrap_err();
+        let val = val.downcast::<SomeMessage>().unwrap();
+        assert_eq!(val.0, 14);
+    }
+
+    #[test]
+    fn any_debug_send_is() {
+        let val = SomeMessage(20);
+        let val: &(dyn AnyDebug + Send) = &val;
+        assert!(val.is::<SomeMessage>());
+        assert!(!val.is::<u32>());
+    }
+    #[test]
+    fn any_debug_send_downcast_ref() {
+        let val = SomeMessage(21);
+        let val: &(dyn AnyDebug + Send) = &val;
+        assert_eq!(val.downcast_ref::<SomeMessage>().unwrap().0, 21);
+    }
+    #[test]
+    fn any_debug_send_downcast_mut() {
+        let mut val = SomeMessage(22);
+        let val_mut: &mut (dyn AnyDebug + Send) = &mut val;
+        val_mut.downcast_mut::<SomeMessage>().unwrap().0 = 23;
+        assert!(val_mut.downcast_mut::<u32>().is_none());
+        assert_eq!(val.0, 23);
+    }
+    #[test]
+    fn any_debug_send_downcast() {
+        let val = SomeMessage(24);
+        let val: Box<(dyn AnyDebug + Send)> = Box::new(val);
+        let val = val.downcast::<u32>().unwrap_err();
+        let val = val.downcast::<SomeMessage>().unwrap();
+        assert_eq!(val.0, 24);
+    }
+
+    #[test]
+    fn any_debug_send_sync_is() {
+        let val = SomeMessage(30);
+        let val: &(dyn AnyDebug + Send + Sync) = &val;
+        assert!(val.is::<SomeMessage>());
+        assert!(!val.is::<u32>());
+    }
+    #[test]
+    fn any_debug_send_sync_downcast_ref() {
+        let val = SomeMessage(31);
+        let val: &(dyn AnyDebug + Send + Sync) = &val;
+        assert_eq!(val.downcast_ref::<SomeMessage>().unwrap().0, 31);
+    }
+    #[test]
+    fn any_debug_send_sync_downcast_mut() {
+        let mut val = SomeMessage(32);
+        let val_mut: &mut (dyn AnyDebug + Send + Sync) = &mut val;
+        val_mut.downcast_mut::<SomeMessage>().unwrap().0 = 33;
+        assert!(val_mut.downcast_mut::<u32>().is_none());
+        assert_eq!(val.0, 33);
+    }
+    #[test]
+    fn any_debug_send_sync_downcast() {
+        let val = SomeMessage(34);
+        let val: Box<(dyn AnyDebug + Send + Sync)> = Box::new(val);
+        let val = val.downcast::<u32>().unwrap_err();
+        let val = val.downcast::<SomeMessage>().unwrap();
+        assert_eq!(val.0, 34);
+    }
 }
