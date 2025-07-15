@@ -22,9 +22,49 @@ Full documentation at https://github.com/orium/cargo-rdme -->
 <!-- Intra-doc links used in lib.rs should be evaluated here. 
 See https://linebender.org/blog/doc-include/ for related discussion. -->
 [`AnyDebug`]: https://docs.rs/anymore/latest/anymore/trait.AnyDebug.html
+[core::any]: https://doc.rust-lang.org/stable/core/any/index.html
+[core::any#smart-pointers-and-dyn-any]: https://doc.rust-lang.org/stable/core/any/index.html#smart-pointers-and-dyn-any
+[AnyDebug::type_name]: https://docs.rs/anymore/latest/anymore/trait.AnyDebug.html#tymethod.type_name
 <!-- cargo-rdme start -->
 
-The Anymore crate provides the [`AnyDebug`][] trait, for dynamically typed values which can be inspected in Rust.
+The Anymore crate provides the [`AnyDebug`][] trait, for dynamically typed values which
+can be inspected in Rust.
+
+These can be used in any program domain, but have been developed with graphical
+user interface libraries as the target consumer.
+The `AnyDebug` trait also has the [`type_name`](AnyDebug::type_name) method, which
+can be used to access the type name of the contained value.
+
+## Usage
+
+The traits in this crate can be used in the same way that you would use
+[`Any`], with the additional capability that the Debug implementation is meaningful.
+See the [module-level documentation][core::any] of `Any` for more details of how it
+can be used.
+
+## Smart pointers and `dyn AnyDebug`
+
+When you have `dyn AnyDebug` contained in a smart pointer, such as `Box` or `Arc`,
+the [`type_name`][AnyDebug::type_name] method will give the type name of the smart
+pointer, rather than the type name of the contained value. This can be avoided by
+converting the smart pointer into a `&dyn AnyDebug` instead, which will return the
+object’s type name. This is the [same caveat][core::any#smart-pointers-and-dyn-any]
+seen with the`type_id` method on `Any`.
+
+## Motivation
+
+In user interface contexts, there is often a need for passing dynamically typed values.
+In [Xilem](https://docs.rs/xilem/latest/xilem/), for example, one of the key concepts is
+dispatching arbitrary messages to the correct component (called `View` in `Xilem`).
+Each `View` expects messages of a specific type or types, and knows how to handle these.
+However, sometimes, due to bugs elsewhere in the app, a view will receive a message of a
+type it didn't expect. If it were using the standard library, `Any` type, there would be no
+feasible way for the author of that `View` implementation to learn what the underlying type was.
+This can make understanding this failure quite challenging.
+Because of this, Xilem uses the `AnyDebug` trait for these messages, so they can be inspected.
+
+A similar need arises in [Masonry](https://docs.rs/masonry/latest/masonry/), which is the widget toolkit
+co-developed with Xilem.
 
 ## Features
 
