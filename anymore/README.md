@@ -22,9 +22,12 @@ Full documentation at https://github.com/orium/cargo-rdme -->
 <!-- Intra-doc links used in lib.rs should be evaluated here. 
 See https://linebender.org/blog/doc-include/ for related discussion. -->
 [`AnyDebug`]: https://docs.rs/anymore/latest/anymore/trait.AnyDebug.html
+[`Any`]: https://doc.rust-lang.org/stable/std/any/trait.Any.html
 [core::any]: https://doc.rust-lang.org/stable/core/any/index.html
 [core::any#smart-pointers-and-dyn-any]: https://doc.rust-lang.org/stable/core/any/index.html#smart-pointers-and-dyn-any
 [AnyDebug::type_name]: https://docs.rs/anymore/latest/anymore/trait.AnyDebug.html#tymethod.type_name
+[`Box`]: https://doc.rust-lang.org/stable/alloc/boxed/struct.Box.html
+[alloc::sync::Arc]: https://doc.rust-lang.org/stable/alloc/sync/struct.Arc.html
 <!-- cargo-rdme start -->
 
 The Anymore crate provides the [`AnyDebug`][] trait, for dynamically typed values which
@@ -44,7 +47,8 @@ can be used.
 
 ## Smart pointers and `dyn AnyDebug`
 
-When you have `dyn AnyDebug` contained in a smart pointer, such as `Box` or `Arc`,
+When you have `dyn AnyDebug` contained in a smart pointer, such as [`Box`] or
+[`Arc`][alloc::sync::Arc],
 the [`type_name`][AnyDebug::type_name] method will give the type name of the smart
 pointer, rather than the type name of the contained value. This can be avoided by
 converting the smart pointer into a `&dyn AnyDebug` instead, which will return the
@@ -68,7 +72,7 @@ co-developed with Xilem.
 
 ## Features
 
-- `std` (enabled by default): Use the Rust standard library.
+- `alloc` (enabled by default): Implement downcasting from [`Box`]es.
 
 <!-- cargo-rdme end -->
 

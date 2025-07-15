@@ -17,8 +17,9 @@ targets = []
 
 [features]
 # TODO: Can we make this `alloc` instead?
-default = ["std"]
-std = []
+default = ["alloc"]
+# Include implementations of downcasting from a Box
+alloc = []
 
 [dependencies]
 

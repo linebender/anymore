@@ -18,7 +18,8 @@
 //!
 //! ## Smart pointers and `dyn AnyDebug`
 //!
-//! When you have `dyn AnyDebug` contained in a smart pointer, such as `Box` or `Arc`,
+//! When you have `dyn AnyDebug` contained in a smart pointer, such as [`Box`] or
+//! [`Arc`][alloc::sync::Arc],
 //! the [`type_name`][AnyDebug::type_name] method will give the type name of the smart
 //! pointer, rather than the type name of the contained value. This can be avoided by
 //! converting the smart pointer into a `&dyn AnyDebug` instead, which will return the
@@ -42,7 +43,7 @@
 //!
 //! ## Features
 //!
-//! - `std` (enabled by default): Use the Rust standard library.
+//! - `alloc` (enabled by default): Implement downcasting from [`Box`]es.
 // LINEBENDER LINT SET - lib.rs - v3
 // See https://linebender.org/wiki/canonical-lints/
 // These lints shouldn't apply to examples or tests.
@@ -58,8 +59,10 @@
 use core::any::Any;
 use core::fmt::Debug;
 
-#[cfg(feature = "std")]
-extern crate std;
+#[cfg(feature = "alloc")]
+extern crate alloc;
+#[cfg(feature = "alloc")]
+use alloc::boxed::Box;
 
 /// A trait to implement dynamic typing.
 ///
@@ -81,6 +84,129 @@ pub trait AnyDebug: Debug + Any {
 impl<T: Any + Debug> AnyDebug for T {
     fn type_name(&self) -> &'static str {
         core::any::type_name::<Self>()
+    }
+}
+
+impl dyn AnyDebug {
+    /// Returns some shared reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_ref<T: AnyDebug>(&self) -> Option<&T> {
+        (self as &dyn Any).downcast_ref::<T>()
+    }
+
+    /// Returns some exclusive reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_mut<T: AnyDebug>(&mut self) -> Option<&mut T> {
+        (self as &mut dyn Any).downcast_mut::<T>()
+    }
+
+    /// Access the actual type of this [`AnyDebug`].
+    ///
+    /// Forwards to the method defined on the type [`Box<dyn Any>`].
+    ///
+    /// ## Errors
+    ///
+    /// If the message contained within `self` is not of type `T`, returns `self`
+    /// (so that e.g. a different type can be downcasted against).
+    #[cfg(feature = "alloc")]
+    pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
+        if self.is::<T>() {
+            Ok((self as Box<dyn Any>).downcast::<T>().unwrap())
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Returns `true` if the inner type is the same as `T`.
+    pub fn is<T: AnyDebug>(&self) -> bool {
+        let this: &dyn Any = self;
+        this.is::<T>()
+    }
+}
+
+impl dyn AnyDebug + Send {
+    /// Returns some shared reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_ref<T: AnyDebug>(&self) -> Option<&T> {
+        (self as &dyn Any).downcast_ref::<T>()
+    }
+
+    /// Returns some exclusive reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_mut<T: AnyDebug>(&mut self) -> Option<&mut T> {
+        (self as &mut dyn Any).downcast_mut::<T>()
+    }
+
+    /// Access the actual type of this [`AnyDebug`].
+    ///
+    /// Forwards to the method defined on the type [`Box<dyn Any>`].
+    ///
+    /// ## Errors
+    ///
+    /// If the message contained within `self` is not of type `T`, returns `self`
+    /// (so that e.g. a different type can be downcasted against).
+    #[cfg(feature = "alloc")]
+    pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
+        if self.is::<T>() {
+            Ok((self as Box<dyn Any>).downcast::<T>().unwrap())
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Returns `true` if the inner type is the same as `T`.
+    pub fn is<T: AnyDebug>(&self) -> bool {
+        let this: &dyn Any = self;
+        this.is::<T>()
+    }
+}
+
+impl dyn AnyDebug + Send + Sync {
+    /// Returns some shared reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_ref<T: AnyDebug>(&self) -> Option<&T> {
+        (self as &dyn Any).downcast_ref::<T>()
+    }
+
+    /// Returns some exclusive reference to the inner value if it is of type `T`, or
+    /// `None` if it isn't.
+    ///
+    /// Forwards to the method defined on the type `dyn Any`.
+    pub fn downcast_mut<T: AnyDebug>(&mut self) -> Option<&mut T> {
+        (self as &mut dyn Any).downcast_mut::<T>()
+    }
+
+    /// Access the actual type of this [`AnyDebug`].
+    ///
+    /// Forwards to the method defined on the type [`Box<dyn Any>`].
+    ///
+    /// ## Errors
+    ///
+    /// If the message contained within `self` is not of type `T`, returns `self`
+    /// (so that e.g. a different type can be downcasted against).
+    #[cfg(feature = "alloc")]
+    pub fn downcast<T: AnyDebug>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
+        if self.is::<T>() {
+            Ok((self as Box<dyn Any>).downcast::<T>().unwrap())
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Returns `true` if the inner type is the same as `T`.
+    pub fn is<T: AnyDebug>(&self) -> bool {
+        let this: &dyn Any = self;
+        this.is::<T>()
     }
 }
 
