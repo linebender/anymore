@@ -215,9 +215,7 @@ impl dyn AnyDebug + Send + Sync {
 
 #[cfg(test)]
 mod tests {
-    #[cfg(not(feature = "alloc"))]
-    compile_error!("Anymore's tests need the `alloc` crate feature to be enabled.");
-
+    extern crate alloc;
     use crate::AnyDebug;
     use alloc::{boxed::Box, format};
 
@@ -279,6 +277,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "alloc")]
     fn any_debug_normal_downcast() {
         let val = SomeMessage(14);
         let val: Box<dyn AnyDebug> = Box::new(val);
@@ -309,6 +308,7 @@ mod tests {
         assert_eq!(val.0, 23);
     }
     #[test]
+    #[cfg(feature = "alloc")]
     fn any_debug_send_downcast() {
         let val = SomeMessage(24);
         let val: Box<(dyn AnyDebug + Send)> = Box::new(val);
@@ -339,6 +339,7 @@ mod tests {
         assert_eq!(val.0, 33);
     }
     #[test]
+    #[cfg(feature = "alloc")]
     fn any_debug_send_sync_downcast() {
         let val = SomeMessage(34);
         let val: Box<(dyn AnyDebug + Send + Sync)> = Box::new(val);
