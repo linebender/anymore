@@ -81,6 +81,7 @@ pub trait AnyDebug: Debug + Any {
     // TODO: Maybe only implement if debug_assertions are enabled?
     fn type_name(&self) -> &'static str;
 }
+
 impl<T: Any + Debug> AnyDebug for T {
     fn type_name(&self) -> &'static str {
         core::any::type_name::<Self>()
