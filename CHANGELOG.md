@@ -17,6 +17,12 @@ This release has an [MSRV][] of 1.86.
 
 This is the initial release.
 
+- Add the `AnyDebug` trait. ([#1][] by [@DJMcNab][])
+
+[@DJMcNab]: https://github.com/DJMcNab
+
+[#1]: https://github.com/linebender/anymore/pull/1
+
 [Unreleased]: https://github.com/linebender/anymore/compare/v0.1.0...HEAD
 
 [MSRV]: README.md#minimum-supported-rust-version-msrv
