@@ -73,6 +73,9 @@ co-developed with Xilem.
 ## Features
 
 - `alloc` (enabled by default): Implement downcasting from [`Box`]es.
+  If this feature is not enabled, Anymore can be used in contexts without an allocator enabled.
+- `type_name` (enabled by default): Provide the `type_name` function on `AnyDebug`, which gives the type's name.
+  Most users should leave this enabled, as the costs of this method existing are expected to be negligible.
 
 <!-- cargo-rdme end -->
 

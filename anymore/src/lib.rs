@@ -44,6 +44,9 @@
 //! ## Features
 //!
 //! - `alloc` (enabled by default): Implement downcasting from [`Box`]es.
+//!   If this feature is not enabled, Anymore can be used in contexts without an allocator enabled.
+//! - `type_name` (enabled by default): Provide the `type_name` function on `AnyDebug`, which gives the type's name.
+//!   Most users should leave this enabled, as the costs of this method existing are expected to be negligible.
 // LINEBENDER LINT SET - lib.rs - v3
 // See https://linebender.org/wiki/canonical-lints/
 // These lints shouldn't apply to examples or tests.
@@ -74,15 +77,19 @@ pub trait AnyDebug: Debug + Any {
     /// Returns the [`type_name`](core::any::type_name) of this value's concrete type.
     ///
     /// This is useful for debugging downcasting failures.
-    /// That is, this method being present does likely increase binary size,
-    /// but we believe that tradeoff is worthwhile to make debugging easier
-    /// for our users.
-    // TODO: Do we want to feature gate this?
-    // TODO: Maybe only implement if debug_assertions are enabled?
+    /// In particular, in cases where you get `Box<Box<SomeType>>`
+    /// inadvertently converted into `Box<dyn AnyDebug>`, then attempting
+    /// to downcast to `SomeType` would fail.
+    ///
+    /// The `type_name` feature is provided for future-compatibility, to avoid needing a breaking release in case a user
+    /// did find that the `type_name` function were imposing an unacceptable binary size cost.
+    /// As this crate is intended for interop between crates, breaking releases are especially costly.
+    #[cfg(feature = "type_name")]
     fn type_name(&self) -> &'static str;
 }
 
 impl<T: Any + Debug> AnyDebug for T {
+    #[cfg(feature = "type_name")]
     fn type_name(&self) -> &'static str {
         core::any::type_name::<Self>()
     }
