@@ -231,6 +231,7 @@ mod tests {
     struct SomeMessage(u32);
 
     #[test]
+    #[cfg(feature = "type_name")]
     fn any_debug_correct_typename() {
         let val = SomeMessage(4);
         let val: &dyn AnyDebug = &val;
