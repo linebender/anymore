@@ -41,7 +41,9 @@
 //! A similar need arises in [Masonry](https://docs.rs/masonry/latest/masonry/), which is the widget toolkit
 //! co-developed with Xilem.
 //!
-//! ## Features
+//! ## Feature Flags
+//!
+//! The following crate [feature flags](https://doc.rust-lang.org/cargo/reference/features.html#dependency-features) are available:
 //!
 //! - `alloc` (enabled by default): Implement downcasting from [`Box`]es.
 //!   If this feature is not enabled, Anymore can be used in contexts without an allocator enabled.
