@@ -8,10 +8,14 @@ Subheadings to categorize changes are `added, changed, deprecated, removed, fixe
 
 # Changelog
 
-The latest published Anymore release is [0.X.Y](#0XY-2025-01-01) which was released on 2025-01-01.
-You can find its changes [documented below](#0XY-2025-01-01).
+The latest published Anymore release is [1.0.0](#100-2025-07-31) which was released on 2025-07-31.
+You can find its changes [documented below](#100-2025-07-31).
 
-## [Unreleased]
+## [Unreleased][]
+
+This release has an [MSRV][] of 1.86.
+
+## 1.0.0 (2025-07-31)
 
 This release has an [MSRV][] of 1.86.
 
@@ -23,6 +27,6 @@ This is the initial release.
 
 [#1]: https://github.com/linebender/anymore/pull/1
 
-[Unreleased]: https://github.com/linebender/anymore/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/linebender/anymore/compare/v1.0.0...HEAD
 
 [MSRV]: README.md#minimum-supported-rust-version-msrv
