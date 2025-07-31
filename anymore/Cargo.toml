@@ -17,9 +17,9 @@ targets = []
 
 [features]
 default = ["alloc", "type_name"]
-# Include helper implementation of downcasting from a Box.
+# Include helper implementation of downcasting from a `Box`.
 alloc = []
-# Include the type_name function on AnyDebug, which is useful for debugging downcasting.
+# Include the `AnyDebug::type_name` method, which is useful for debugging downcasting.
 type_name = []
 
 [dependencies]
