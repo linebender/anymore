@@ -16,9 +16,11 @@ default-target = "x86_64-unknown-linux-gnu"
 targets = []
 
 [features]
-default = ["alloc"]
-# Include implementations of downcasting from a Box
+default = ["alloc", "type_name"]
+# Include helper implementation of downcasting from a `Box`.
 alloc = []
+# Include the `AnyDebug::type_name` method, which is useful for debugging downcasting.
+type_name = []
 
 [dependencies]
 

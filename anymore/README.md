@@ -70,9 +70,14 @@ Because of this, Xilem uses the `AnyDebug` trait for these messages, so they can
 A similar need arises in [Masonry](https://docs.rs/masonry/latest/masonry/), which is the widget toolkit
 co-developed with Xilem.
 
-## Features
+## Feature Flags
+
+The following crate [feature flags](https://doc.rust-lang.org/cargo/reference/features.html#dependency-features) are available:
 
 - `alloc` (enabled by default): Implement downcasting from [`Box`]es.
+  If this feature is not enabled, Anymore can be used in contexts without an allocator enabled.
+- `type_name` (enabled by default): Provide the `type_name` function on `AnyDebug`, which gives the type's name.
+  Most users should leave this enabled, as the costs of this method existing are expected to be negligible.
 
 <!-- cargo-rdme end -->
 
