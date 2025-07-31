@@ -75,7 +75,7 @@ use alloc::boxed::Box;
 /// except that it can be debug printed.
 ///
 /// See also the [crate level documentation](crate) for more details.
-pub trait AnyDebug: Debug + Any {
+pub trait AnyDebug: Any + Debug {
     /// Returns the [`type_name`](core::any::type_name) of this value's concrete type.
     ///
     /// This is useful for debugging downcasting failures.
