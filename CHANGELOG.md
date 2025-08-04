@@ -8,14 +8,14 @@ Subheadings to categorize changes are `added, changed, deprecated, removed, fixe
 
 # Changelog
 
-The latest published Anymore release is [1.0.0](#100-2025-07-31) which was released on 2025-07-31.
-You can find its changes [documented below](#100-2025-07-31).
+The latest published Anymore release is [1.0.0](#100-2025-08-04) which was released on 2025-08-04.
+You can find its changes [documented below](#100-2025-08-04).
 
 ## [Unreleased][]
 
 This release has an [MSRV][] of 1.86.
 
-## 1.0.0 (2025-07-31)
+## 1.0.0 (2025-08-04)
 
 This release has an [MSRV][] of 1.86.
 
