@@ -25,19 +25,6 @@ This version of Anymore has been verified to compile with **Rust 1.86** and late
 Future versions of Anymore might increase the Rust version requirement.
 It will not be treated as a breaking change and as such can even happen with small patch releases.
 
-<details>
-<summary>Click here if compiling fails.</summary>
-
-As time has passed, some of Anymore's dependencies could have released versions with a higher Rust requirement.
-If you encounter a compilation issue due to a dependency and don't want to upgrade your Rust toolchain, then you could downgrade the dependency.
-
-```sh
-# Use the problematic dependency's name and version
-cargo update -p package_name --precise 0.1.1
-```
-
-</details>
-
 ## Community
 
 [![Linebender Zulip, #anymore topic.](https://img.shields.io/badge/Linebender-%23rust--ui-blue?logo=Zulip)](https://xi.zulipchat.com/#narrow/channel/422907-rust-ui/topic/Anymore/with/528830762)
