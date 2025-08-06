@@ -2,7 +2,7 @@
 
 # Anymore
 
-`Any` extended with `Debug` support, developed for user interfaces
+**`Any` extended with `Debug` support, developed for user interfaces**
 
 [![Latest published version.](https://img.shields.io/crates/v/anymore.svg)](https://crates.io/crates/anymore)
 [![Documentation build status.](https://docs.rs/anymore/badge.svg)](https://docs.rs/anymore)
