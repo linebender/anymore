@@ -5,12 +5,12 @@
 **`Any` extended with `Debug` support, developed for user interfaces**
 
 [![Latest published version.](https://img.shields.io/crates/v/anymore.svg)](https://crates.io/crates/anymore)
-[![Documentation build status.](https://docs.rs/anymore/badge.svg)](https://docs.rs/anymore)
+[![Documentation build status.](https://img.shields.io/docsrs/anymore.svg)](https://docs.rs/anymore)
 [![Apache 2.0 or MIT license.](https://img.shields.io/badge/license-Apache--2.0_OR_MIT-blue.svg)](#license)
 \
 [![Linebender Zulip, #anymore topic.](https://img.shields.io/badge/Linebender-%23rust--ui-blue?logo=Zulip)](https://xi.zulipchat.com/#narrow/channel/422907-rust-ui/topic/Anymore/with/528830762)
 [![Dependency staleness status.](https://deps.rs/repo/github/linebender/anymore/status.svg)](https://deps.rs/repo/github/linebender/anymore)
-[![GitHub Actions CI status.](https://github.com/linebender/anymore/workflows/CI/badge.svg)](https://github.com/linebender/anymore/actions)
+[![GitHub Actions CI status.](https://img.shields.io/github/actions/workflow/status/linebender/anymore/ci.yml?logo=github&label=CI)](https://github.com/linebender/anymore/actions)
 
 </div>
 
